@@ -1,0 +1,11 @@
+{
+  "FIREBASE_AUTH_CONFIG": {
+    "apiKey": "AIzaSyC2zEPkilWhoFkbKyhnf4Ii2DN4gpJ4dcc",
+    "authDomain": "task-manager-2bf18.firebaseapp.com",
+    "databaseURL": "https://task-manager-2bf18.firebaseio.com",
+    "projectId": "task-manager-2bf18",
+    "storageBucket": "task-manager-2bf18.appspot.com",
+    "messagingSenderId": "1043361103064",
+    "appId": "1:1043361103064:web:5e4425103305fd77bcebad"
+  }
+}
