@@ -1,7 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import * as firebase from 'firebase';
-import * as dbConfig from './database.config.json';
+import { FIREBASE_AUTH_CONFIG } from './database.config.json';
 import { TaskRecord } from './taskrecord.dto';
+
+type DocumentData = firebase.firestore.DocumentData;
+
+/**
+ * Return formatted document data (currently format Timestamp to ISO Date)
+ * @param doc Firebase document
+ */
+function getFormattedDocData(doc: DocumentData): DocumentData {
+  const record = doc.data();
+  record['date'] = record['date'].toDate().toISOString();
+  return record;
+}
 
 @Injectable()
 export class TasksService {
@@ -9,12 +21,12 @@ export class TasksService {
 
   public constructor() {
     // Init firebase cloud storage
-    const firebaseApp = firebase.initializeApp(dbConfig.FIREBASE_AUTH_CONFIG);
+    const firebaseApp = firebase.initializeApp(FIREBASE_AUTH_CONFIG);
     this._db = firebase.firestore();
   }
 
   // Return all tasks from the cloud storage
-  async getAllTasksFromDb(): Promise<firebase.firestore.DocumentData[]> {
+  async getAllTasksFromDb(): Promise<DocumentData[]> {
     return await this._db
       .collection('tasks')
       .orderBy('date')
@@ -22,14 +34,12 @@ export class TasksService {
       .get()
       .then(snapshot =>
         snapshot.docs.map(doc => {
-          const record = doc.data();
-          record['date'] = record['date'].toDate().toISOString();
-          return record;
-        }),
+          return getFormattedDocData(doc);
+        })
       );
   }
 
-  getTaskFromDbByID(id: string): firebase.firestore.DocumentData {
+  getTaskFromDbByID(id: string): DocumentData {
     console.log(id);
     return this._db
       .collection('tasks')
@@ -37,7 +47,7 @@ export class TasksService {
       .get()
       .then(doc => {
         if (doc.exists) {
-          return doc.data();
+          return getFormattedDocData(doc);
         }
         console.error('No such task!');
         return null;

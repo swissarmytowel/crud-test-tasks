@@ -1,12 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
+import { AppModule } from './app/app.module';
 import { INestApplication } from '@nestjs/common';
 
 import * as functions from 'firebase-functions';
 import * as express from 'express';
-
-const bodyParser = require('body-parser');
+import * as bodyParser from 'body-parser'
 
 const server = express();
 
