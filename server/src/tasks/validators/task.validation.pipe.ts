@@ -12,7 +12,6 @@ export class TaskValidationPipe implements PipeTransform {
 
   transform(value: any, metadata: ArgumentMetadata) {
     const { error } = this.schema.validate(value);
-    console.error(error);
     if (error) {
       throw new BadRequestException('Record format is not valid!');
     }
