@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import * as firebase from 'firebase';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { FIREBASE_AUTH_CONFIG } from './database.config.json';
 import { TaskRecord } from './taskrecord.dto';
+import * as firebase from 'firebase';
 
 type DocumentData = firebase.firestore.DocumentData;
+
+const collectionID = 'tasks';
 
 /**
  * Return formatted document data (currently format Timestamp to ISO Date)
@@ -17,18 +19,18 @@ function getFormattedDocData(doc: DocumentData): DocumentData {
 
 @Injectable()
 export class TasksService {
-  private readonly _db: firebase.firestore.Firestore;
+  private readonly cloudStoreRootRef: firebase.firestore.Firestore;
 
   public constructor() {
     // Init firebase cloud storage
     const firebaseApp = firebase.initializeApp(FIREBASE_AUTH_CONFIG);
-    this._db = firebase.firestore();
+    this.cloudStoreRootRef = firebase.firestore();
   }
 
   // Return all tasks from the cloud storage
   async getAllTasksFromDb(): Promise<DocumentData[]> {
-    return await this._db
-      .collection('tasks')
+    return await this.cloudStoreRootRef
+      .collection(collectionID)
       .orderBy('date')
       .limit(100) //TODO: get rid of results limit (?)
       .get()
@@ -39,26 +41,27 @@ export class TasksService {
       );
   }
 
-  getTaskFromDbByID(id: string): DocumentData {
-    console.log(id);
-    return this._db
-      .collection('tasks')
+  getTaskFromDbByID(id: string): Promise<DocumentData> {
+    return this.cloudStoreRootRef
+      .collection(collectionID)
       .doc(id)
       .get()
       .then(doc => {
-        if (doc.exists) {
-          return getFormattedDocData(doc);
+        if (!doc.exists) {
+          throw new NotFoundException('No such task!');
         }
-        console.error('No such task!');
-        return null;
+        return getFormattedDocData(doc);
       })
-      .catch(error => console.error('Error retrieving document', error));
+      .catch(error => {
+        console.error('Error retrieving document: ', error);
+        return null;
+      });
   }
 
   createTask(taskRecord: TaskRecord) {
     taskRecord.date = new Date();
-    this._db
-      .collection('tasks')
+    this.cloudStoreRootRef
+      .collection(collectionID)
       .add({ ...taskRecord })
       .then(doc => {
         console.log(`Task created. ID: ${doc.id}`);
@@ -66,5 +69,17 @@ export class TasksService {
       .catch(function(error) {
         console.error('Error creating task: ', error);
       });
+  }
+
+  removeTaskByID(id: string) {
+    this.cloudStoreRootRef.collection(collectionID)
+      .doc(id)
+      .delete()
+      .then(v => {
+        console.log(`Task ${id} is deleted successfully`);
+      })
+      .catch(err => {
+        console.error('Error deleting document: ', err);
+      })
   }
 }
