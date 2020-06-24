@@ -3,8 +3,8 @@ import {
   NotFoundException,
   BadRequestException
 } from '@nestjs/common';
-import { FIREBASE_AUTH_CONFIG } from './database.config.json';
-import { TaskRecord } from './taskrecord.dto';
+import { FIREBASE_AUTH_CONFIG } from '../database.config.json';
+import { TaskRecord } from '../taskrecord.dto';
 import * as firebase from 'firebase';
 
 type DocumentData = firebase.firestore.DocumentData;
@@ -57,8 +57,8 @@ export class TasksService {
         }
         return getFormattedDocData(doc);
       })
-      .catch(error => {
-        console.error('Error retrieving document: ', error);
+      .catch(err => {
+        console.error('Error retrieving document: ', err);
         return null;
       });
   }
@@ -74,11 +74,8 @@ export class TasksService {
     this.cloudStoreRootRef
       .collection(collectionID)
       .add({ ...taskRecord })
-      .then(doc => {
-        console.log(`Task created. ID: ${doc.id}`);
-      })
-      .catch(function(error) {
-        console.error('Error creating task: ', error);
+      .catch(err => {
+        console.error('Error creating task: ', err);
       });
   }
 
@@ -87,11 +84,18 @@ export class TasksService {
       .collection(collectionID)
       .doc(id)
       .delete()
-      .then(v => {
-        console.log(`Task ${id} is deleted successfully`);
-      })
       .catch(err => {
         console.error('Error deleting document: ', err);
+      });
+  }
+
+  updateTaskById(id: string, taskRecord: TaskRecord) {
+    this.cloudStoreRootRef
+      .collection(collectionID)
+      .doc(id)
+      .update({ ...taskRecord })
+      .catch(err => {
+        console.error('Error updating document: ', err);
       });
   }
 }

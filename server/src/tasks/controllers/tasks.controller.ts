@@ -2,18 +2,17 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Delete,
-  Put,
   UsePipes,
   Req,
   Param,
-  Body,
-  NotFoundException
+  Body
 } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { TaskRecord } from './taskrecord.dto';
-import { createTaskSchema } from './tasks.schema';
-import { TaskValidationPipe } from './validation.pipe';
+import { TasksService } from '../services/tasks.service';
+import { TaskRecord } from '../taskrecord.dto';
+import { createTaskSchema, updateTaskSchema } from '../schemas/task.schemas';
+import { TaskValidationPipe } from '../validators/task.validation.pipe';
 
 @Controller('tasks')
 export class TasksController {
@@ -27,7 +26,7 @@ export class TasksController {
   }
 
   @Get(':id')
-  getTaskByID(@Param() params): firebase.firestore.DocumentData {
+  getTask(@Param() params): firebase.firestore.DocumentData {
     return this.tasksService.getTaskFromDbByID(params.id);
   }
 
@@ -38,7 +37,15 @@ export class TasksController {
   }
 
   @Delete(':id')
-  removeTaskById(@Param('id') id: string) {
+  removeTask(@Param('id') id: string) {
     this.tasksService.removeTaskByID(id);
+  }
+
+  @Patch(':id')
+  updateTask(
+    @Param('id') id: string,
+    @Body(new TaskValidationPipe(updateTaskSchema)) taskRecord: TaskRecord
+  ) {
+    this.tasksService.updateTaskById(id, taskRecord);
   }
 }
