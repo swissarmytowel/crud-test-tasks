@@ -15,6 +15,8 @@ import { TaskRecordDTO } from './taskrecord.dto';
 import { createTaskSchema, updateTaskSchema } from './schemas/task.schemas';
 import { TaskValidationPipe } from './validators/task.validation.pipe';
 import { HttpExceptionFilter } from '../http-exception.filter';
+import { Request } from 'express';
+
 
 @Controller('tasks')
 export class TasksController {

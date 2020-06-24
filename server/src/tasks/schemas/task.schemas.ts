@@ -9,8 +9,7 @@ export const createTaskSchema = Joi.object({
   duration: Joi.number()
     .integer()
     .greater(0)
-    .required()
-    .strict(),
+    .required(),
 
   date: Joi.date()
     .iso()
