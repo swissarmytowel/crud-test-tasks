@@ -3,8 +3,8 @@ import {
   NotFoundException,
   BadRequestException
 } from '@nestjs/common';
-import { FIREBASE_AUTH_CONFIG } from '../database.config.json';
-import { TaskRecord } from '../taskrecord.dto';
+import { FIREBASE_AUTH_CONFIG } from './database.config.json';
+import { TaskRecordDTO } from './taskrecord.dto';
 import * as firebase from 'firebase';
 
 type DocumentData = firebase.firestore.DocumentData;
@@ -63,7 +63,7 @@ export class TasksService {
       });
   }
 
-  createTask(taskRecord: TaskRecord) {
+  createTask(taskRecord: TaskRecordDTO) {
     // TODO: Validate date properly!
     const typeOfDateProperty = typeof taskRecord.date;
     if (typeOfDateProperty == 'undefined') {
@@ -89,7 +89,7 @@ export class TasksService {
       });
   }
 
-  updateTaskById(id: string, taskRecord: TaskRecord) {
+  updateTaskById(id: string, taskRecord: TaskRecordDTO) {
     this.cloudStoreRootRef
       .collection(collectionID)
       .doc(id)

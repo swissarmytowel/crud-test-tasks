@@ -9,10 +9,10 @@ import {
   Param,
   Body
 } from '@nestjs/common';
-import { TasksService } from '../services/tasks.service';
-import { TaskRecord } from '../taskrecord.dto';
-import { createTaskSchema, updateTaskSchema } from '../schemas/task.schemas';
-import { TaskValidationPipe } from '../validators/task.validation.pipe';
+import { TasksService } from './tasks.service';
+import { TaskRecordDTO } from './taskrecord.dto';
+import { createTaskSchema, updateTaskSchema } from './schemas/task.schemas';
+import { TaskValidationPipe } from './validators/task.validation.pipe';
 
 @Controller('tasks')
 export class TasksController {
@@ -26,13 +26,13 @@ export class TasksController {
   }
 
   @Get(':id')
-  getTask(@Param() params): firebase.firestore.DocumentData {
-    return this.tasksService.getTaskFromDbByID(params.id);
+  getTask(@Param('id') id: string): firebase.firestore.DocumentData {
+    return this.tasksService.getTaskFromDbByID(id);
   }
 
   @Post()
   @UsePipes(new TaskValidationPipe(createTaskSchema))
-  createNewTask(@Body() taskRecord: TaskRecord) {
+  createNewTask(@Body() taskRecord: TaskRecordDTO) {
     this.tasksService.createTask(taskRecord);
   }
 
@@ -44,7 +44,7 @@ export class TasksController {
   @Patch(':id')
   updateTask(
     @Param('id') id: string,
-    @Body(new TaskValidationPipe(updateTaskSchema)) taskRecord: TaskRecord
+    @Body(new TaskValidationPipe(updateTaskSchema)) taskRecord: TaskRecordDTO
   ) {
     this.tasksService.updateTaskById(id, taskRecord);
   }
