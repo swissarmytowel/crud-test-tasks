@@ -4,6 +4,7 @@ import {
   Post,
   Delete,
   Put,
+  UsePipes,
   Req,
   Param,
   Body,
@@ -11,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TaskRecord } from './taskrecord.dto';
+import { createTaskSchema } from './tasks.schema';
+import { TaskValidationPipe } from './validation.pipe';
 
 @Controller('tasks')
 export class TasksController {
@@ -29,6 +32,7 @@ export class TasksController {
   }
 
   @Post()
+  @UsePipes(new TaskValidationPipe(createTaskSchema))
   createNewTask(@Body() taskRecord: TaskRecord) {
     this.tasksService.createTask(taskRecord);
   }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException
+} from '@nestjs/common';
 import { FIREBASE_AUTH_CONFIG } from './database.config.json';
 import { TaskRecord } from './taskrecord.dto';
 import * as firebase from 'firebase';
@@ -59,7 +63,13 @@ export class TasksService {
   }
 
   createTask(taskRecord: TaskRecord) {
-    taskRecord.date = new Date();
+    // TODO: Validate date properly!
+    const typeOfDateProperty = typeof taskRecord.date;
+    if (typeOfDateProperty == undefined) {
+      taskRecord.date = new Date();
+    } else if (typeOfDateProperty != typeof Date) {
+      throw new BadRequestException('Date format is not valid!');
+    }
     this.cloudStoreRootRef
       .collection(collectionID)
       .add({ ...taskRecord })
@@ -72,7 +82,8 @@ export class TasksService {
   }
 
   removeTaskByID(id: string) {
-    this.cloudStoreRootRef.collection(collectionID)
+    this.cloudStoreRootRef
+      .collection(collectionID)
       .doc(id)
       .delete()
       .then(v => {
@@ -80,6 +91,6 @@ export class TasksService {
       })
       .catch(err => {
         console.error('Error deleting document: ', err);
-      })
+      });
   }
 }
