@@ -17,6 +17,7 @@ const collectionID = 'tasks';
  */
 function getFormattedDocData(doc: DocumentData): DocumentData {
   const record = doc.data();
+  record.id = doc.id;
   record['date'] = record['date'].toDate().toISOString();
   return record;
 }
@@ -65,7 +66,7 @@ export class TasksService {
   createTask(taskRecord: TaskRecord) {
     // TODO: Validate date properly!
     const typeOfDateProperty = typeof taskRecord.date;
-    if (typeOfDateProperty == undefined) {
+    if (typeOfDateProperty == 'undefined') {
       taskRecord.date = new Date();
     } else if (typeOfDateProperty != typeof Date) {
       throw new BadRequestException('Date format is not valid!');
