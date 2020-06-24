@@ -9,10 +9,12 @@ export const createTaskSchema = Joi.object({
   duration: Joi.number()
     .integer()
     .greater(0)
-    .required(),
+    .required()
+    .strict(),
 
   date: Joi.date()
     .iso()
+    .strict()
     .optional()
 });
 
@@ -24,6 +26,7 @@ export const updateTaskSchema = Joi.object({
 
   duration: Joi.number()
     .greater(0)
+    .strict()
     .optional(),
 
   date: Joi.date()

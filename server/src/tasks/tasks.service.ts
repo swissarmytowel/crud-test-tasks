@@ -56,10 +56,6 @@ export class TasksService {
           throw new NotFoundException('No such task!');
         }
         return getFormattedDocData(doc);
-      })
-      .catch(err => {
-        console.error(`Error retrieving document ID: ${id}: `, err);
-        return null;
       });
   }
 
@@ -71,34 +67,20 @@ export class TasksService {
     } else if (typeOfDateProperty != typeof Date) {
       throw new BadRequestException('Date format is not valid!');
     }
-    this.cloudStoreRootRef
-      .collection(collectionID)
-      .add({ ...taskRecord })
-      .catch(err => {
-        console.error('Error creating task: ', err);
-        throw new BadRequestException(`Error creating task`);
-      });
+    this.cloudStoreRootRef.collection(collectionID).add({ ...taskRecord });
   }
 
   removeTaskByID(id: string) {
     this.cloudStoreRootRef
       .collection(collectionID)
       .doc(id)
-      .delete()
-      .catch(err => {
-        console.error('Error deleting document: ', err);
-        throw new BadRequestException(`Error deleting document with ID: ${id}`);
-      });
+      .delete();
   }
 
   updateTaskById(id: string, taskRecord: TaskRecordDTO) {
     this.cloudStoreRootRef
       .collection(collectionID)
       .doc(id)
-      .update({ ...taskRecord })
-      .catch(err => {
-        console.error('Error updating document', err);
-        throw new BadRequestException(`Error updating document with id ${id}`);
-      });
+      .update({ ...taskRecord });
   }
 }
