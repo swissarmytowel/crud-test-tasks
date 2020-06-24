@@ -5,8 +5,8 @@ Backend for a task management app, providing a simple RESTful API written in Typ
 
 Starting:
 ```
-> git clone https://github.com/swissarmytowel/crud-test-tasks
-> cd server/
-> npm init
-> npm run build && firebase serve --only functions
+git clone https://github.com/swissarmytowel/crud-test-tasks
+cd server/
+npm init
+npm run build && firebase serve --only functions
 ```
