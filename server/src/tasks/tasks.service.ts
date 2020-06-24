@@ -58,7 +58,7 @@ export class TasksService {
         return getFormattedDocData(doc);
       })
       .catch(err => {
-        console.error('Error retrieving document: ', err);
+        console.error(`Error retrieving document ID: ${id}: `, err);
         return null;
       });
   }
@@ -76,6 +76,7 @@ export class TasksService {
       .add({ ...taskRecord })
       .catch(err => {
         console.error('Error creating task: ', err);
+        throw new BadRequestException(`Error creating task`);
       });
   }
 
@@ -86,6 +87,7 @@ export class TasksService {
       .delete()
       .catch(err => {
         console.error('Error deleting document: ', err);
+        throw new BadRequestException(`Error deleting document with ID: ${id}`);
       });
   }
 
@@ -95,7 +97,8 @@ export class TasksService {
       .doc(id)
       .update({ ...taskRecord })
       .catch(err => {
-        console.error('Error updating document: ', err);
+        console.error('Error updating document', err);
+        throw new BadRequestException(`Error updating document with id ${id}`);
       });
   }
 }

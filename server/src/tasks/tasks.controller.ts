@@ -5,6 +5,7 @@ import {
   Patch,
   Delete,
   UsePipes,
+  UseFilters,
   Req,
   Param,
   Body
@@ -13,6 +14,7 @@ import { TasksService } from './tasks.service';
 import { TaskRecordDTO } from './taskrecord.dto';
 import { createTaskSchema, updateTaskSchema } from './schemas/task.schemas';
 import { TaskValidationPipe } from './validators/task.validation.pipe';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 @Controller('tasks')
 export class TasksController {
@@ -26,22 +28,26 @@ export class TasksController {
   }
 
   @Get(':id')
+  @UseFilters(HttpExceptionFilter)
   getTask(@Param('id') id: string): firebase.firestore.DocumentData {
     return this.tasksService.getTaskFromDbByID(id);
   }
 
   @Post()
   @UsePipes(new TaskValidationPipe(createTaskSchema))
+  @UseFilters(HttpExceptionFilter)
   createNewTask(@Body() taskRecord: TaskRecordDTO) {
     this.tasksService.createTask(taskRecord);
   }
 
   @Delete(':id')
+  @UseFilters(HttpExceptionFilter)
   removeTask(@Param('id') id: string) {
     this.tasksService.removeTaskByID(id);
   }
 
   @Patch(':id')
+  @UseFilters(HttpExceptionFilter)
   updateTask(
     @Param('id') id: string,
     @Body(new TaskValidationPipe(updateTaskSchema)) taskRecord: TaskRecordDTO
