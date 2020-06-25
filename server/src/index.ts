@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
 import { INestApplication } from '@nestjs/common';
-import functions from 'firebase-functions';
-import express from 'express';
-import bodyParser from 'body-parser';
+import * as functions from 'firebase-functions';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
 
 const server = express();
 
