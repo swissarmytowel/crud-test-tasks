@@ -33,8 +33,8 @@ export class TasksService {
   }
 
   // Return all tasks from the cloud storage
-  async getAllTasksFromDb(): Promise<DocumentData[]> {
-    return await this.cloudStoreRootRef
+  getAllTasksFromDb(): Promise<DocumentData[]> {
+    return this.cloudStoreRootRef
       .collection(collectionID)
       .orderBy('date')
       .limit(100) //TODO: get rid of results limit (?)
