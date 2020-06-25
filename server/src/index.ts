@@ -2,16 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from './app/app.module';
 import { INestApplication } from '@nestjs/common';
-
-import * as functions from 'firebase-functions';
-import * as express from 'express';
-import * as bodyParser from 'body-parser'
-import * as multer from 'multer';
+import functions from 'firebase-functions';
+import express from 'express';
+import bodyParser from 'body-parser';
 
 const server = express();
 
-server.use(bodyParser.json())
-  .use(bodyParser.urlencoded({extended: true}));
+server.use(bodyParser.json()).use(bodyParser.urlencoded({ extended: true }));
 
 // Creating nest server with app module and express instance
 export const createNestServer = async (

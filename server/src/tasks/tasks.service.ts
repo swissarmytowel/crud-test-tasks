@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { FIREBASE_AUTH_CONFIG } from './database.config.json';
 import { TaskRecordDTO } from './taskrecord.dto';
-import * as firebase from 'firebase';
+import firebase from 'firebase';
 
 type DocumentData = firebase.firestore.DocumentData;
 
