@@ -33,30 +33,26 @@ export class TasksService {
   }
 
   // Return all tasks from the cloud storage
-  getAllTasksFromDb(): Promise<DocumentData[]> {
-    return this.cloudStoreRootRef
+  async getAllTasksFromDb(): Promise<DocumentData[]> {
+    const snapshot = await this.cloudStoreRootRef
       .collection(collectionID)
       .orderBy('date')
       .limit(100) //TODO: get rid of results limit (?)
-      .get()
-      .then(snapshot =>
-        snapshot.docs.map(doc => {
-          return getFormattedDocData(doc);
-        })
-      );
+      .get();
+    return snapshot.docs.map(doc => {
+      return getFormattedDocData(doc);
+    });
   }
 
-  getTaskFromDbByID(id: string): Promise<DocumentData> {
-    return this.cloudStoreRootRef
+  async getTaskFromDbByID(id: string): Promise<DocumentData> {
+    const doc = await this.cloudStoreRootRef
       .collection(collectionID)
       .doc(id)
-      .get()
-      .then(doc => {
-        if (!doc.exists) {
-          throw new NotFoundException('No such task!');
-        }
-        return getFormattedDocData(doc);
-      });
+      .get();
+    if (!doc.exists) {
+      throw new NotFoundException('No such task!');
+    }
+    return getFormattedDocData(doc);
   }
 
   createTask(taskRecord: TaskRecordDTO) {
